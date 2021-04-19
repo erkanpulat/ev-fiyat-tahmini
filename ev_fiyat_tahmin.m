@@ -22,8 +22,14 @@ end
 function ev_fiyat_tahmin_OpeningFcn(hObject, ~, handles, varargin)
 
 handles.output = hObject;
-
 guidata(hObject, handles);
+
+global veriSeti girisVerileri cikisVerileri
+veriSeti = xlsread('veriSeti.xlsx');
+girisVerileri = transpose(veriSeti(:,1:9));
+cikisVerileri = transpose(veriSeti(:,end));
+assignin('base','girisVerileri',girisVerileri);
+assignin('base','cikisVerileri',cikisVerileri);
 
 
 function varargout = ev_fiyat_tahmin_OutputFcn(hObject, eventdata, handles) 
