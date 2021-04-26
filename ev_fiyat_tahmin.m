@@ -168,13 +168,20 @@ end
 
 function hesapla_Callback(hObject, eventdata, handles)
 
-global brutM2 netM2 odaSayisi binaYasi bulunduguKat katSayisi isitmaSistemi salonSayisi siteIci 
+global brutM2 netM2 odaSayisi binaYasi bulunduguKat katSayisi isitmaSistemi salonSayisi siteIci net
 girisler = [brutM2; netM2;odaSayisi;salonSayisi;binaYasi;bulunduguKat;katSayisi;isitmaSistemi;siteIci];
-girisler
+outputTest = net(girisler);
+set(handles.ev_fiyati,'String',outputTest);
 
 
 
 function egitim_Callback(hObject, eventdata, handles)
+global net girisVerileri cikisVerileri
+net = fitnet([12,15,8],'trainlm');
+net.divideParam.trainRatio = 70/100;
+net.divideParam.valRatio = 15/100;
+net.divideParam.testRatio = 15/100;
+[net,tr] = train(net,girisVerileri,cikisVerileri);
 
 
 function ev_fiyati_Callback(hObject, eventdata, handles)
