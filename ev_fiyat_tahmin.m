@@ -168,20 +168,56 @@ end
 
 function hesapla_Callback(hObject, eventdata, handles)
 
-global brutM2 netM2 odaSayisi binaYasi bulunduguKat katSayisi isitmaSistemi salonSayisi siteIci net
+global brutM2 netM2 odaSayisi binaYasi bulunduguKat katSayisi isitmaSistemi salonSayisi siteIci 
 girisler = [brutM2; netM2;odaSayisi;salonSayisi;binaYasi;bulunduguKat;katSayisi;isitmaSistemi;siteIci];
-outputTest = net(girisler);
+
+load 'egitilmisAg.mat', 'egitilmisAg';
+outputTest =  egitilmisAg(girisler);
 set(handles.ev_fiyati,'String',outputTest);
 
 
 
 function egitim_Callback(hObject, eventdata, handles)
-global net girisVerileri cikisVerileri
-net = fitnet([12,15,8],'trainlm');
+
+global girisVerileri cikisVerileri
+
+hiddenLayerSize = [10 8];
+TF={'logsig','tansig','purelin'};
+net = newff(girisVerileri,cikisVerileri,hiddenLayerSize,TF);
+
+net.trainFcn = 'trainlm';
+net.input.processFcns = {'removeconstantrows','mapminmax'};
+net.output.processFcns = {'removeconstantrows','mapminmax'};
+net.divideFcn = 'dividerand'; 
+net.divideMode = 'sample';  
 net.divideParam.trainRatio = 70/100;
 net.divideParam.valRatio = 15/100;
 net.divideParam.testRatio = 15/100;
+
+net.performFcn = 'mse'; 
+net.plotFcns = {'plotperform','plottrainstate','ploterrhist', ...
+   'plotregression', 'plotfit'};
+
+net.trainParam.showWindow=true; 
+net.trainParam.showCommandLine=false;
+net.trainParam.show=10;
+net.trainParam.epochs=100;
+net.trainParam.goal=1e-3;
+
 [net,tr] = train(net,girisVerileri,cikisVerileri);
+
+ysaCikisVerileri = net(girisVerileri);
+fark = gsubtract(cikisVerileri,ysaCikisVerileri);
+performans = perform(net,cikisVerileri,ysaCikisVerileri)
+
+assignin('base','ysaCikisVerileri',ysaCikisVerileri);
+assignin('base','performans',performans);
+assignin('base','fark',fark);
+
+figure, plotregression(cikisVerileri,ysaCikisVerileri);
+
+egitilmisAg = net;
+save('egitilmisAg.mat', 'egitilmisAg');
 
 
 function ev_fiyati_Callback(hObject, eventdata, handles)
