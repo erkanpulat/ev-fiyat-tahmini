@@ -229,3 +229,25 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+function egitimGizle_Callback(hObject, eventdata, handles)
+if(get(hObject,'Value')==get(hObject,'Max'))
+    set(handles.egitim, 'visible','off')
+    set(handles.egitimGizle,'visible','off')
+    set(handles.egitimGoster,'visible','on')
+    set(handles.egitimGizle,'value',0)
+    set(handles.hesapla,'Position',[9.6 26.538 90.2 5.385])
+    set(handles.ev_fiyati,'Position',[9.6 13.077 90.2 6.692])
+    set(handles.ev_fiyati_label,'Position',[9.8 20 90.2 2.385])
+end
+
+function egitimGoster_Callback(hObject, eventdata, handles)
+if(get(hObject,'Value')==get(hObject,'Max'))
+    set(handles.egitim, 'visible','on')
+    set(handles.egitimGizle,'visible','on')
+    set(handles.egitimGoster,'visible','off')
+    set(handles.egitimGoster,'value',0)
+    set(handles.egitim,'Position',[9.8 33.077 90.2 5.385])
+    set(handles.hesapla,'Position',[9.6 21.538 90.2 5.385])
+    set(handles.ev_fiyati,'Position',[9.6 6.077 90.2 6.692])
+    set(handles.ev_fiyati_label,'Position',[9.8 13 90.2 2.385])
+end
